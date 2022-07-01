@@ -1,12 +1,12 @@
 <template>
   <div>
-<!--    <div style="margin: 10px 0">
-      <el-input style="width: 200px" placeholder="请输入名称" suffix-icon="el-icon-search" v-model="partyname"></el-input>
-      &lt;!&ndash;      <el-input style="width: 200px" placeholder="请输入邮箱" suffix-icon="el-icon-message" class="ml-5" v-model="email"></el-input>&ndash;&gt;
-      &lt;!&ndash;      <el-input style="width: 200px" placeholder="请输入地址" suffix-icon="el-icon-position" class="ml-5" v-model="address"></el-input>&ndash;&gt;
-      <el-button class="ml-5" type="primary" @click="load">搜索</el-button>
-      <el-button type="warning" @click="reset">重置</el-button>
-    </div>-->
+    <!--    <div style="margin: 10px 0">
+          <el-input style="width: 200px" placeholder="请输入名称" suffix-icon="el-icon-search" v-model="partyname"></el-input>
+          &lt;!&ndash;      <el-input style="width: 200px" placeholder="请输入邮箱" suffix-icon="el-icon-message" class="ml-5" v-model="email"></el-input>&ndash;&gt;
+          &lt;!&ndash;      <el-input style="width: 200px" placeholder="请输入地址" suffix-icon="el-icon-position" class="ml-5" v-model="address"></el-input>&ndash;&gt;
+          <el-button class="ml-5" type="primary" @click="load">搜索</el-button>
+          <el-button type="warning" @click="reset">重置</el-button>
+        </div>-->
 
     <el-header>
       未成团活动
@@ -27,7 +27,7 @@
       <el-table-column label="活动介绍" prop="partyintro"></el-table-column>
       <el-table-column label="操作" width="180" align="center">
         <template slot-scope="scope">
-          <el-button type="success" @click="handleEdit(scope.row)">成团 </el-button>
+          <el-button type="success" @click="handleEdit(scope.row)">成团</el-button>
           <el-popconfirm
               class="ml-5"
               confirm-button-text='确定'
@@ -37,7 +37,7 @@
               title="您确定取消活动吗？"
               @confirm="del(scope.row.id)"
           >
-            <el-button type="danger" slot="reference">取消 </el-button>
+            <el-button type="danger" slot="reference">取消</el-button>
           </el-popconfirm>
         </template>
       </el-table-column>
@@ -73,7 +73,7 @@
       <el-table-column label="活动介绍" prop="partyintro"></el-table-column>
       <el-table-column label="操作" width="200" align="center">
         <template slot-scope="scope">
-          <el-button type="success" @click="handleEdit(scope.row)">增加费用 </el-button>
+          <el-button type="success" @click="handleEdit(scope.row)">增加费用</el-button>
           <el-popconfirm
               class="ml-5"
               confirm-button-text='确定'
@@ -83,7 +83,7 @@
               title="您确定结束活动吗？"
               @confirm="del(scope.row.id)"
           >
-            <el-button type="danger" slot="reference">结束活动 </el-button>
+            <el-button type="danger" slot="reference">结束活动</el-button>
           </el-popconfirm>
         </template>
       </el-table-column>
@@ -227,7 +227,19 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-
+        this.request.get("/partyinfo/toGroup", {
+          params: {
+            partyId: row.id
+          }
+        }).then(res => {
+          if (res.code === '200') {
+            this.$message.success("成团成功")
+            this.load()
+            this.load2()
+          } else {
+            this.$message.error("成团失败")
+          }
+        })
       }).catch(() => {
         this.$message({
           type: 'info',
