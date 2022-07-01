@@ -120,7 +120,7 @@
       <el-table-column label="活动介绍" prop="partyintro"></el-table-column>
       <el-table-column label="操作" width="220" align="center">
         <template slot-scope="scope">
-          <el-button type="success" @click="handleEdit3(scope.row)">缴费</el-button>
+          <el-button type="success" @click="payBill(scope.row)">缴费</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -171,6 +171,19 @@
         <el-button type="primary" @click="save">确 定</el-button>
       </div>
     </el-dialog>
+
+    <el-dialog title="账单信息" :visible.sync="dialogFormVisible2" width="30%">
+      <el-table :data="dialogTableData" border stripe :header-cell-class-name="'headerBg'">
+        <el-table-column prop="id" label="ID"></el-table-column>
+        <el-table-column prop="billName" label="账单名称"></el-table-column>
+        <el-table-column label="账单费用" prop="billPrice"></el-table-column>
+        <el-table-column label="发起用户" prop="billUsername"></el-table-column>
+      </el-table>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible2 = false">关 闭</el-button>
+<!--        <el-button type="primary" @click="save">确 定</el-button>-->
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -182,6 +195,7 @@ export default {
       tableData: [],
       tableData2: [],
       tableData3: [],
+      dialogTableData: [],
       total: 0,
       total2: 0,
       total3: 0,
@@ -194,6 +208,7 @@ export default {
       partyname: "",
       form: {},
       dialogFormVisible: false,
+      dialogFormVisible2: false,
       menuDialogVis: false,
       multipleSelection: [],
       multipleSelection2: [],
@@ -331,6 +346,22 @@ export default {
           this.load3()
         } else {
           this.$message.error("删除失败")
+        }
+      })
+    },
+    payBill(row) {
+      this.form = JSON.parse(JSON.stringify(row))
+      this.request.get("/partybill", {
+        params: {
+          partyId: row.id
+        }
+      }).then(res => {
+        if (res.code === '200') {
+          //this.$message.success("成功")
+          this.dialogTableData = res.data
+          this.dialogFormVisible2 = true
+        } else {
+          this.$message.error("失败")
         }
       })
     },
