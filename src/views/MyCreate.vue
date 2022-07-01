@@ -136,10 +136,10 @@
       </el-pagination>
     </div>
 
-    <el-dialog title="活动信息" :visible.sync="dialogFormVisible" width="30%" >
+    <el-dialog title="活动信息" :visible.sync="dialogFormVisible" width="30%">
       <el-form label-width="80px" size="small">
         <el-form-item label="ID">
-          <el-input v-model="form.id" autocomplete="off" readonly></el-input>
+          <el-input v-model="form.id" autocomplete="off" :readonly="true"></el-input>
         </el-form-item>
         <el-form-item label="活动名称">
           <el-input v-model="form.partyname" autocomplete="off"></el-input>
@@ -184,6 +184,7 @@ export default {
       tableData3: [],
       total: 0,
       total2: 0,
+      total3: 0,
       pageNum: 1,
       pageSize: 5,
       pageNum2: 1,
@@ -254,7 +255,7 @@ export default {
     load3() {
       this.userid = JSON.parse(localStorage.getItem("user")).id
       //console.log(this.userid)
-      this.request.get("/partyinfo/mycreategrouped", {
+      this.request.get("/partyinfo/mycreatepayed", {
         ///partyinfo/page
         params: {
           pageNum: this.pageNum,
@@ -284,7 +285,7 @@ export default {
       this.dialogFormVisible = true
       this.form = {}
     },
-    handleEdit(row){
+    handleEdit(row) {
       this.form = JSON.parse(JSON.stringify(row))
       this.dialogFormVisible = true
     },
@@ -305,6 +306,7 @@ export default {
             this.$message.success("成团成功")
             this.load()
             this.load2()
+            this.load3()
           } else {
             this.$message.error("成团失败")
           }
@@ -317,10 +319,16 @@ export default {
       });
     },
     del(id) {
-      this.request.delete("/partyinfo/" + id).then(res => {
+      this.request.get("/partyinfo/endparty", {
+        params: {
+          partyId: id
+        }
+      }).then(res => {
         if (res.code === '200') {
           this.$message.success("删除成功")
           this.load()
+          this.load2()
+          this.load3()
         } else {
           this.$message.error("删除失败")
         }
@@ -367,12 +375,12 @@ export default {
     handleSizeChange3(pageSize) {
       console.log(pageSize)
       this.pageSize3 = pageSize
-      this.load2()
+      this.load3()
     },
     handleCurrentChange3(pageNum) {
       console.log(pageNum)
       this.pageNum3 = pageNum
-      this.load2()
+      this.load3()
     },
     timeConvert(timestamp) {
       //num:0 YYYY-MM-DD  num:1  YYYY-MM-DD hh:mm:ss // timestamp:时间戳

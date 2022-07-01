@@ -4,9 +4,11 @@
       <w>cfvisible</w>
       <w>changeparty</w>
       <w>checkmessage</w>
+      <w>endparty</w>
       <w>joinparty</w>
       <w>mycreate</w>
       <w>mycreategrouped</w>
+      <w>mycreatepayed</w>
       <w>myjoin</w>
       <w>myjoingrouped</w>
       <w>partyinfo</w>
