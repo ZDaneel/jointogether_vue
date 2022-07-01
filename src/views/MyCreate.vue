@@ -9,7 +9,7 @@
         </div>-->
 
     <el-header>
-      未成团活动
+      <h2>未成团活动</h2>
     </el-header>
     <el-table :data="tableData" border stripe :header-cell-class-name="'headerBg'"
               @selection-change="handleSelectionChange">
@@ -25,9 +25,10 @@
       <el-table-column label="已报名人数" prop="nownumber"></el-table-column>
       <el-table-column label="团长" prop="username"></el-table-column>
       <el-table-column label="活动介绍" prop="partyintro"></el-table-column>
-      <el-table-column label="操作" width="180" align="center">
+      <el-table-column label="操作" width="220" align="center">
         <template slot-scope="scope">
-          <el-button type="success" @click="handleEdit(scope.row)">成团</el-button>
+          <el-button type="success" @click="handleEdit(scope.row)">编辑</el-button>
+          <el-button type="success" @click="toGroup(scope.row)">成团</el-button>
           <el-popconfirm
               class="ml-5"
               confirm-button-text='确定'
@@ -55,7 +56,7 @@
     </div>
 
     <el-header>
-      已成团活动
+      <h2>已成团活动</h2>
     </el-header>
     <el-table :data="tableData2" border stripe :header-cell-class-name="'headerBg'"
               @selection-change="handleSelectionChange2">
@@ -71,9 +72,9 @@
       <el-table-column label="已报名人数" prop="nownumber"></el-table-column>
       <el-table-column label="团长" prop="username"></el-table-column>
       <el-table-column label="活动介绍" prop="partyintro"></el-table-column>
-      <el-table-column label="操作" width="200" align="center">
+      <el-table-column label="操作" width="220" align="center">
         <template slot-scope="scope">
-          <el-button type="success" @click="handleEdit(scope.row)">增加费用</el-button>
+          <el-button type="success" @click="handleEdit2(scope.row)">增加费用</el-button>
           <el-popconfirm
               class="ml-5"
               confirm-button-text='确定'
@@ -100,33 +101,75 @@
       </el-pagination>
     </div>
 
-    <el-dialog title="详情" :visible.sync="dialogFormVisible" width="90%">
-      <el-form :model="form" ref="partyForm">
-        <el-card>
-          <el-table :data="partyInformation" border stripe style="margin-top: 20px">
-            <el-table-column label="活动名称" prop="partyname"></el-table-column>
-            <el-table-column label="活动地点" prop="place"></el-table-column>
-            <el-table-column label="活动子项目" prop="subpartyname">
-              <el-checkbox label="有奖问答  ￥0.01"></el-checkbox>
-              <el-checkbox label="精选  ￥0.01"></el-checkbox>
-              <el-checkbox label="党史问答  ￥0.01"></el-checkbox>
-            </el-table-column>
-            <el-table-column label="活动时间" prop="date">
-              <template slot-scope="scope">{{ timeConvert(scope.row.date) }}</template>
-            </el-table-column>
-            <el-table-column label="活动子项目" prop="subparty"></el-table-column>
-            <el-table-column label="报名费用" prop="charge"></el-table-column>
-            <el-table-column label="活动人数" prop="number"></el-table-column>
-            <el-table-column label="已报名人数" prop="nownumber"></el-table-column>
-            <el-table-column label="团长" prop="username"></el-table-column>
-            <el-table-column label="活动介绍" prop="partyintro"></el-table-column>
-          </el-table>
-        </el-card>
+    <el-header>
+      <h2>未缴纳费用</h2>
+    </el-header>
+    <el-table :data="tableData3" border stripe :header-cell-class-name="'headerBg'"
+              @selection-change="handleSelectionChange3">
+      <el-table-column type="selection" width="55"></el-table-column>
+      <el-table-column prop="id" label="ID"></el-table-column>
+      <el-table-column prop="partyname" label="名称"></el-table-column>
+      <el-table-column label="活动地点" prop="place"></el-table-column>
+      <el-table-column label="活动时间" prop="date">
+        <template slot-scope="scope">{{ timeConvert(scope.row.date) }}</template>
+      </el-table-column>
+      <el-table-column label="报名费用" prop="charge"></el-table-column>
+      <el-table-column label="活动人数" prop="number"></el-table-column>
+      <el-table-column label="已报名人数" prop="nownumber"></el-table-column>
+      <el-table-column label="团长" prop="username"></el-table-column>
+      <el-table-column label="活动介绍" prop="partyintro"></el-table-column>
+      <el-table-column label="操作" width="220" align="center">
+        <template slot-scope="scope">
+          <el-button type="success" @click="handleEdit3(scope.row)">缴费</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <div style="padding: 10px 0">
+      <el-pagination
+          @size-change="handleSizeChange3"
+          @current-change="handleCurrentChange3"
+          :current-page="pageNum3"
+          :page-sizes="[2, 5, 10, 20]"
+          :page-size="pageSize3"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total">
+      </el-pagination>
+    </div>
+
+    <el-dialog title="活动信息" :visible.sync="dialogFormVisible" width="30%" >
+      <el-form label-width="80px" size="small">
+        <el-form-item label="ID">
+          <el-input v-model="form.id" autocomplete="off" readonly></el-input>
+        </el-form-item>
+        <el-form-item label="活动名称">
+          <el-input v-model="form.partyname" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="活动地点">
+          <el-input v-model="form.place" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="活动时间">
+          <div class="block">
+            <el-date-picker
+                v-model="form.date"
+                type="datetime"
+                placeholder="选择日期时间"
+            ></el-date-picker>
+          </div>
+        </el-form-item>
+        <el-form-item label="报名费用">
+          <el-input v-model="form.charge" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="活动人数">
+          <el-input v-model="form.number" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="活动简介">
+          <el-input v-model="form.partyintro" autocomplete="off"></el-input>
+        </el-form-item>
       </el-form>
-      <span slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">取 消</el-button>
-          <el-button type="primary" @click="join()">成 团</el-button>
-        </span>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="save">确 定</el-button>
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -138,18 +181,22 @@ export default {
     return {
       tableData: [],
       tableData2: [],
+      tableData3: [],
       total: 0,
       total2: 0,
       pageNum: 1,
       pageSize: 5,
       pageNum2: 1,
       pageSize2: 5,
+      pageNum3: 1,
+      pageSize3: 5,
       partyname: "",
       form: {},
       dialogFormVisible: false,
       menuDialogVis: false,
       multipleSelection: [],
       multipleSelection2: [],
+      multipleSelection3: [],
       menuData: [],
       partyInformation: null,
       props: {
@@ -166,6 +213,7 @@ export default {
   created() {
     this.load()
     this.load2()
+    this.load3()
   },
   methods: {
     load() {
@@ -202,16 +250,33 @@ export default {
         this.tableData2 = res.data
         this.total2 = res.data.total
       })
+    },
+    load3() {
+      this.userid = JSON.parse(localStorage.getItem("user")).id
+      //console.log(this.userid)
+      this.request.get("/partyinfo/mycreategrouped", {
+        ///partyinfo/page
+        params: {
+          pageNum: this.pageNum,
+          pageSize: this.pageSize,
+          id: this.userid
+          //partyname: this.partyname,
+        }
+      }).then(res => {
+        //console.log(res.data)
+        this.tableData3 = res.data
+        this.total3 = res.data.total
+      })
 
     },
     save() {
-      this.request.post("/category", this.form).then(res => {
+      this.request.post("/partyinfo/changeparty", this.form).then(res => {
         if (res.code === '200') {
-          this.$message.success("保存成功")
+          this.$message.success("修改成功")
           this.dialogFormVisible = false
           this.load()
         } else {
-          this.$message.error("保存失败")
+          this.$message.error("修改失败")
         }
       })
     },
@@ -219,7 +284,11 @@ export default {
       this.dialogFormVisible = true
       this.form = {}
     },
-    handleEdit(row) {
+    handleEdit(row){
+      this.form = JSON.parse(JSON.stringify(row))
+      this.dialogFormVisible = true
+    },
+    toGroup(row) {
       this.form = JSON.parse(JSON.stringify(row))
       //this.dialogFormVisible = true
       this.$confirm('请问是否成团?', '提示', {
@@ -247,22 +316,6 @@ export default {
         });
       });
     },
-    joinParty(row) {
-      this.request.get("/partyinfo/joinparty", {
-        params: {
-          userId: this.userid,
-          partyId: row.id
-        }
-      }).then(res => {
-        if (res.code === '200') {
-          this.$message.success("加入成功")
-          //this.dialogFormVisible = false
-          this.load()
-        } else {
-          this.$message.error("加入失败")
-        }
-      })
-    },
     del(id) {
       this.request.delete("/partyinfo/" + id).then(res => {
         if (res.code === '200') {
@@ -281,9 +334,15 @@ export default {
       console.log(val)
       this.multipleSelection2 = val
     },
+    handleSelectionChange3(val) {
+      console.log(val)
+      this.multipleSelection3 = val
+    },
     reset() {
       this.name = ""
       this.load()
+      this.load2()
+      this.load3()
     },
     handleSizeChange(pageSize) {
       console.log(pageSize)
@@ -303,6 +362,16 @@ export default {
     handleCurrentChange2(pageNum) {
       console.log(pageNum)
       this.pageNum2 = pageNum
+      this.load2()
+    },
+    handleSizeChange3(pageSize) {
+      console.log(pageSize)
+      this.pageSize3 = pageSize
+      this.load2()
+    },
+    handleCurrentChange3(pageNum) {
+      console.log(pageNum)
+      this.pageNum3 = pageNum
       this.load2()
     },
     timeConvert(timestamp) {

@@ -74,7 +74,6 @@
       <el-table-column label="操作" width="200" align="center">
         <template slot-scope="scope">
           <el-button type="success" @click="handleEdit(scope.row)">增加费用 </el-button>
-          </el-popconfirm>
         </template>
       </el-table-column>
     </el-table>
