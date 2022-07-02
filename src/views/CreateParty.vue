@@ -24,7 +24,7 @@
           </div>
         </el-form-item>
         <el-form-item label="缴纳费用" prop="charge">
-          <el-input v-model="ruleForm.charge"></el-input>
+          <el-input v-model.number="ruleForm.charge"></el-input>
         </el-form-item>
         <el-form-item label="拼团人数" prop="number">
           <el-input-number
@@ -41,10 +41,7 @@
           ></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="submitForm()"
-          >立即创建
-          </el-button
-          >
+          <el-button type="primary" @click="submitForm()" >立即创建</el-button>
           <el-button @click="resetForm('ruleForm')">重置</el-button>
         </el-form-item>
       </el-form>
@@ -80,16 +77,9 @@ export default {
           {min: 3, max: 5, message: "长度在 3 到 5 个字符", trigger: "blur"},
         ],
         place: [{required: true, message: "请选择活动地点", trigger: "blur"}],
-        type: [
-          {
-            type: "array",
-            required: true,
-            message: "请至少选择一个活动性质",
-            trigger: "change",
-          },
-        ],
         charge: [
           {required: true, message: "请输入应缴纳费用", trigger: "blur"},
+          {type: 'number',required: true, message: "请输入数字", trigger: "blur"}
         ],
         number: [{required: true, message: "请选择人数", trigger: "blur"}],
         partyintro: [
@@ -106,9 +96,9 @@ export default {
         this.request.post("/partyinfo", this.ruleForm).then(res => {
           if (res.code === '200') {
             this.$message.success("创建成功")
-            this.dialogFormVisible = false
-            this.load()
-            //this.$router.push({path: "/myparty"}); // 页面路由跳转
+            this.$router.push({path: "/mycreate"}); // 页面路由跳转
+/*            this.dialogFormVisible = false
+            this.load()*/
           } else {
             this.$message.error("创建失败")
           }

@@ -1,13 +1,5 @@
 <template>
   <div>
-    <!--    <div style="margin: 10px 0">
-          <el-input style="width: 200px" placeholder="请输入名称" suffix-icon="el-icon-search" v-model="partyname"></el-input>
-          &lt;!&ndash;      <el-input style="width: 200px" placeholder="请输入邮箱" suffix-icon="el-icon-message" class="ml-5" v-model="email"></el-input>&ndash;&gt;
-          &lt;!&ndash;      <el-input style="width: 200px" placeholder="请输入地址" suffix-icon="el-icon-position" class="ml-5" v-model="address"></el-input>&ndash;&gt;
-          <el-button class="ml-5" type="primary" @click="load">搜索</el-button>
-          <el-button type="warning" @click="reset">重置</el-button>
-        </div>-->
-
     <el-header>
       <h2>未成团活动</h2>
     </el-header>
@@ -82,7 +74,7 @@
               icon="el-icon-info"
               icon-color="red"
               title="您确定结束活动吗？"
-              @confirm="del(scope.row.id)"
+              @confirm="endParty(scope.row.id)"
           >
             <el-button type="danger" slot="reference">结束活动</el-button>
           </el-popconfirm>
@@ -334,6 +326,16 @@ export default {
       });
     },
     del(id) {
+      this.request.delete("/partyinfo/" + id).then(res => {
+        if (res.code === '200') {
+          this.$message.success("取消成功")
+          this.load()
+        } else {
+          this.$message.error("取消失败")
+        }
+      })
+    },
+    endParty(id){
       this.request.get("/partyinfo/endparty", {
         params: {
           partyId: id
@@ -357,7 +359,6 @@ export default {
         }
       }).then(res => {
         if (res.code === '200') {
-          //this.$message.success("成功")
           this.dialogTableData = res.data
           this.dialogFormVisible2 = true
         } else {
