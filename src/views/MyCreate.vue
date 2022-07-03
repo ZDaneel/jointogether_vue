@@ -4,7 +4,7 @@
       <h2>未成团活动</h2>
     </el-header>
     <el-table :data="tableData" border stripe :header-cell-class-name="'headerBg'"
-              @selection-change="handleSelectionChange">
+              @selection-change="handleSelectionChange" max-height="250">
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column prop="id" label="ID"></el-table-column>
       <el-table-column prop="partyname" label="名称"></el-table-column>
@@ -59,7 +59,7 @@
       <el-table-column label="活动时间" prop="date">
         <template slot-scope="scope">{{ timeConvert(scope.row.date) }}</template>
       </el-table-column>
-      <el-table-column label="报名费用" prop="charge"></el-table-column>
+      <el-table-column label="活动费用" prop="charge"></el-table-column>
       <el-table-column label="活动人数" prop="number"></el-table-column>
       <el-table-column label="已报名人数" prop="nownumber"></el-table-column>
       <el-table-column label="团长" prop="username"></el-table-column>
@@ -105,11 +105,10 @@
       <el-table-column label="活动时间" prop="date">
         <template slot-scope="scope">{{ timeConvert(scope.row.date) }}</template>
       </el-table-column>
-      <el-table-column label="报名费用" prop="charge"></el-table-column>
-      <el-table-column label="活动人数" prop="number"></el-table-column>
+      <el-table-column label="活动费用" prop="charge"></el-table-column>
       <el-table-column label="已报名人数" prop="nownumber"></el-table-column>
       <el-table-column label="团长" prop="username"></el-table-column>
-      <el-table-column label="活动介绍" prop="partyintro"></el-table-column>
+      <el-table-column label="已缴费人数" prop="nownumber"></el-table-column>
       <el-table-column label="操作" width="220" align="center">
         <template slot-scope="scope">
           <el-button type="success" @click="payBill(scope.row)">缴费</el-button>
@@ -149,7 +148,7 @@
           </div>
         </el-form-item>
         <el-form-item label="报名费用">
-          <el-input v-model="form.charge" autocomplete="off"></el-input>
+          <el-input v-model.number="form.charge" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="活动人数">
           <el-input v-model="form.number" autocomplete="off"></el-input>
@@ -164,16 +163,38 @@
       </div>
     </el-dialog>
 
+    <el-dialog title="增加费用" :visible.sync="dialogFormVisible3" width="30%">
+      <el-form label-width="80px" size="small">
+        <el-form-item label="账单名称">
+          <el-input v-model="addBillForm.billName" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="账单费用">
+          <el-input v-model.number="addBillForm.billPrice" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible3 = false;">关 闭</el-button>
+        <el-button type="primary" @click="saveAddBill">确 定</el-button>
+      </div>
+    </el-dialog>
+
     <el-dialog title="账单信息" :visible.sync="dialogFormVisible2" width="30%">
-      <el-table :data="dialogTableData" border stripe :header-cell-class-name="'headerBg'">
-        <el-table-column prop="id" label="ID"></el-table-column>
+      <p>你需要支付{{avgNum}}元</p>
+      <br>
+      <el-table :data="dialogTableData" border stripe :header-cell-class-name="'headerBg'" id="out-table">
+<!--        <el-table-column prop="id" label="ID"></el-table-column>-->
         <el-table-column prop="billName" label="账单名称"></el-table-column>
         <el-table-column label="账单费用" prop="billPrice"></el-table-column>
         <el-table-column label="发起用户" prop="billUsername"></el-table-column>
       </el-table>
       <div slot="footer" class="dialog-footer">
+        <el-button
+            type="info"
+            icon="el-icon-download"
+            @click="exportData"
+        >导出</el-button>
+        <el-button type="primary" @click="payBillConfirm">确 定</el-button>
         <el-button @click="dialogFormVisible2 = false">关 闭</el-button>
-<!--        <el-button type="primary" @click="save">确 定</el-button>-->
       </div>
     </el-dialog>
   </div>
@@ -197,10 +218,18 @@ export default {
       pageSize2: 5,
       pageNum3: 1,
       pageSize3: 5,
+      avgNum: 0,
       partyname: "",
       form: {},
+      addBillForm: {
+        billName: null,
+        billPrice: null,
+        billPartyId: null,
+        billUsername: null,
+      },
       dialogFormVisible: false,
       dialogFormVisible2: false,
+      dialogFormVisible3: false,
       menuDialogVis: false,
       multipleSelection: [],
       multipleSelection2: [],
@@ -262,7 +291,7 @@ export default {
     load3() {
       this.userid = JSON.parse(localStorage.getItem("user")).id
       //console.log(this.userid)
-      this.request.get("/partyinfo/mycreatepayed", {
+      this.request.get("/partyinfo/mycreateunpaid", {
         ///partyinfo/page
         params: {
           pageNum: this.pageNum,
@@ -296,6 +325,11 @@ export default {
       this.form = JSON.parse(JSON.stringify(row))
       this.dialogFormVisible = true
     },
+    handleEdit2(row){
+      this.addBillForm.billPartyId = row.id
+      this.addBillForm.billUsername = JSON.parse(localStorage.getItem("user")).username
+      this.dialogFormVisible3 = true
+    },
     toGroup(row) {
       this.form = JSON.parse(JSON.stringify(row))
       //this.dialogFormVisible = true
@@ -313,7 +347,6 @@ export default {
             this.$message.success("成团成功")
             this.load()
             this.load2()
-            this.load3()
           } else {
             this.$message.error("成团失败")
           }
@@ -343,11 +376,25 @@ export default {
       }).then(res => {
         if (res.code === '200') {
           this.$message.success("删除成功")
-          this.load()
           this.load2()
           this.load3()
         } else {
           this.$message.error("删除失败")
+        }
+      })
+    },
+    saveAddBill(){
+      this.request.post("/partybill", this.addBillForm).then(res => {
+        if (res.code === '200') {
+          this.$message.success("增加成功")
+          this.dialogFormVisible3 = false
+          //清空
+          this.addBillForm.billName = null
+          this.addBillForm.billPrice = null
+          //刷新
+          this.load2()
+        } else {
+          this.$message.error("增加失败")
         }
       })
     },
@@ -361,10 +408,44 @@ export default {
         if (res.code === '200') {
           this.dialogTableData = res.data
           this.dialogFormVisible2 = true
+          //计算账单总花费
+          let billSum = 0
+          for (const bill of this.dialogTableData) {
+            billSum += bill.billPrice
+          }
+          this.avgNum = parseFloat(billSum/this.form.number).toFixed(2)
         } else {
           this.$message.error("失败")
         }
       })
+    },
+    payBillConfirm(){
+
+    },
+    exportData(){
+      let excelName = '活动账单.xlsx';
+      let xlsxParam = { raw: true };//转换成excel时，使用原始的格式
+      // 克隆节点
+      let tables = document.getElementById("out-table").cloneNode(true);
+      // 判断是否为固定列，解决（为固定列时，会重复生成表格）
+      if (tables.querySelector('.el-table__fixed') !== null) {
+        tables.removeChild(tables.querySelector('.el-table__fixed'))
+      }
+      let table_book = this.$XLSX.utils.table_to_book(tables,xlsxParam);
+      let table_write = this.$XLSX.write(table_book, {
+        bookType: "xlsx",
+        bookSST: true,
+        type: "array"
+      });
+      try {
+        this.$FileSaver.saveAs(
+            new Blob([table_write], { type: "application/octet-stream" }),
+            excelName
+        );
+      } catch (e) {
+        if (typeof console !== "undefined") console.log(e, table_write);
+      }
+      return table_write;
     },
     handleSelectionChange(val) {
       console.log(val)

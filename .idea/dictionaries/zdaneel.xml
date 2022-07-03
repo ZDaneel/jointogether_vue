@@ -1,16 +1,21 @@
 <component name="ProjectDictionaryState">
   <dictionary name="zdaneel">
     <words>
+      <w>allendparty</w>
       <w>cfvisible</w>
       <w>changeparty</w>
       <w>checkmessage</w>
+      <w>endjoinedparty</w>
       <w>endparty</w>
       <w>joinparty</w>
       <w>mycreate</w>
       <w>mycreategrouped</w>
       <w>mycreatepayed</w>
+      <w>mycreateunpaid</w>
       <w>myjoin</w>
       <w>myjoingrouped</w>
+      <w>myjoinpayed</w>
+      <w>nownumber</w>
       <w>partybill</w>
       <w>partyinfo</w>
       <w>partyintro</w>

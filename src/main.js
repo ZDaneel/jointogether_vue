@@ -6,6 +6,8 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import './assets/gloable.css'
 import request from "@/utils/request";
+import FileSaver from 'file-saver'
+import * as XLSX from 'xlsx'
 
 
 // main.js全局注册
@@ -32,8 +34,10 @@ import VueSmoothScroll from "vue2-smooth-scroll";
 Vue.use(VueSmoothScroll)
 
 
-
+//设置全局
 Vue.prototype.request=request
+Vue.prototype.$FileSaver = FileSaver;
+Vue.prototype.$XLSX = XLSX;
 
 new Vue({
   router,
