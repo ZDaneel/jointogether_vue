@@ -15,12 +15,16 @@
       <w>myjoin</w>
       <w>myjoingrouped</w>
       <w>myjoinpayed</w>
+      <w>myjoinunpaid</w>
       <w>nownumber</w>
+      <w>paidnumber</w>
       <w>partybill</w>
       <w>partyinfo</w>
       <w>partyintro</w>
       <w>partymessage</w>
       <w>partyname</w>
+      <w>payconfirm</w>
+      <w>payover</w>
       <w>subcharge</w>
       <w>subpartyname</w>
       <w>tabledata</w>

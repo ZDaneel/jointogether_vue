@@ -94,24 +94,30 @@
     </div>
 
     <el-header>
-      <h2>未缴纳费用</h2>
+      <h2>缴纳费用情况</h2>
     </el-header>
     <el-table :data="tableData3" border stripe :header-cell-class-name="'headerBg'"
               @selection-change="handleSelectionChange3">
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column prop="id" label="ID"></el-table-column>
       <el-table-column prop="partyname" label="名称"></el-table-column>
-      <el-table-column label="活动地点" prop="place"></el-table-column>
-      <el-table-column label="活动时间" prop="date">
-        <template slot-scope="scope">{{ timeConvert(scope.row.date) }}</template>
-      </el-table-column>
       <el-table-column label="活动费用" prop="charge"></el-table-column>
-      <el-table-column label="已报名人数" prop="nownumber"></el-table-column>
-      <el-table-column label="团长" prop="username"></el-table-column>
-      <el-table-column label="已缴费人数" prop="nownumber"></el-table-column>
+      <el-table-column label="参加人数" prop="nownumber"></el-table-column>
+      <el-table-column label="缴费人数" prop="paidnumber"></el-table-column>
       <el-table-column label="操作" width="220" align="center">
         <template slot-scope="scope">
-          <el-button type="success" @click="payBill(scope.row)">缴费</el-button>
+          <el-popconfirm
+              class="ml-5"
+              confirm-button-text='确定'
+              cancel-button-text='我再想想'
+              icon="el-icon-info"
+              icon-color="red"
+              title="您确定完成缴费吗？"
+              @confirm="payOver(scope.row)"
+          >
+            <el-button type="success" slot="reference" v-if="scope.row.paidnumber === scope.row.nownumber">缴费完成</el-button>
+          </el-popconfirm>
+          <el-button type="success" v-if="scope.row.paidnumber !== scope.row.nownumber" disabled>缴费完成</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -175,26 +181,6 @@
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible3 = false;">关 闭</el-button>
         <el-button type="primary" @click="saveAddBill">确 定</el-button>
-      </div>
-    </el-dialog>
-
-    <el-dialog title="账单信息" :visible.sync="dialogFormVisible2" width="30%">
-      <p>你需要支付{{avgNum}}元</p>
-      <br>
-      <el-table :data="dialogTableData" border stripe :header-cell-class-name="'headerBg'" id="out-table">
-<!--        <el-table-column prop="id" label="ID"></el-table-column>-->
-        <el-table-column prop="billName" label="账单名称"></el-table-column>
-        <el-table-column label="账单费用" prop="billPrice"></el-table-column>
-        <el-table-column label="发起用户" prop="billUsername"></el-table-column>
-      </el-table>
-      <div slot="footer" class="dialog-footer">
-        <el-button
-            type="info"
-            icon="el-icon-download"
-            @click="exportData"
-        >导出</el-button>
-        <el-button type="primary" @click="payBillConfirm">确 定</el-button>
-        <el-button @click="dialogFormVisible2 = false">关 闭</el-button>
       </div>
     </el-dialog>
   </div>
@@ -419,8 +405,20 @@ export default {
         }
       })
     },
-    payBillConfirm(){
-
+    payOver(row) {
+      this.form = JSON.parse(JSON.stringify(row))
+      this.request.get("/partybill/payover", {
+        params: {
+          partyId: row.id
+        }
+      }).then(res => {
+        if (res.code === '200') {
+          this.$message.success("成功")
+          this.load3()
+        } else {
+          this.$message.error("失败")
+        }
+      })
     },
     exportData(){
       let excelName = '活动账单.xlsx';
