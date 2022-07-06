@@ -63,34 +63,6 @@
             <el-button type="primary" @click="save">确 定</el-button>
           </div>
         </el-dialog>-->
-    <el-dialog title="详情" :visible.sync="dialogFormVisible" width="90%">
-      <el-form :model="form" ref="partyForm">
-        <el-card>
-          <el-table :data="partyInformation" border stripe style="margin-top: 20px">
-            <el-table-column label="活动名称" prop="partyname"></el-table-column>
-            <el-table-column label="活动地点" prop="place"></el-table-column>
-            <el-table-column label="活动子项目" prop="subpartyname">
-              <el-checkbox label="有奖问答  ￥0.01"></el-checkbox>
-              <el-checkbox label="精选  ￥0.01"></el-checkbox>
-              <el-checkbox label="党史问答  ￥0.01"></el-checkbox>
-            </el-table-column>
-            <el-table-column label="活动时间" prop="date">
-              <template slot-scope="scope">{{ timeConvert(scope.row.date) }}</template>
-            </el-table-column>
-            <el-table-column label="活动子项目" prop="subparty"></el-table-column>
-            <el-table-column label="报名费用" prop="charge"></el-table-column>
-            <el-table-column label="活动人数" prop="number"></el-table-column>
-            <el-table-column label="已报名人数" prop="nownumber"></el-table-column>
-            <el-table-column label="团长" prop="username"></el-table-column>
-            <el-table-column label="活动介绍" prop="partyintro"></el-table-column>
-          </el-table>
-        </el-card>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">取 消</el-button>
-          <el-button type="primary" @click="join()">参 加</el-button>
-        </span>
-    </el-dialog>
   </div>
 </template>
 
@@ -137,8 +109,7 @@ export default {
           //partyname: this.partyname,
         }
       }).then(res => {
-        //console.log(res.data)
-        this.tableData = res.data
+        this.tableData = res.data.list
         this.total = res.data.total
       })
 

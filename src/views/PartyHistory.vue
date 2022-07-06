@@ -103,7 +103,7 @@ export default {
         }
       }).then(res => {
         //console.log(res.data)
-        this.tableData = res.data
+        this.tableData = res.data.list
         this.total = res.data.total
       })
     },

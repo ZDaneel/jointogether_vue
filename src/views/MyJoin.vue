@@ -54,6 +54,7 @@
           :total="total">
       </el-pagination>
     </div>
+<!--    layout="total, sizes, prev, pager, next, jumper"-->
 
     <el-header>
       <h2>已成团活动</h2>
@@ -86,7 +87,7 @@
           :page-sizes="[2, 5, 10, 20]"
           :page-size="pageSize2"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="total">
+          :total="total2">
       </el-pagination>
     </div>
 
@@ -143,11 +144,11 @@
     <el-dialog title="账单信息" :visible.sync="dialogFormVisible2" width="30%">
       <p>你需要支付{{ avgNum }}元</p>
       <br>
-      <el-table :data="dialogTableData" border stripe :header-cell-class-name="'headerBg'" id="out-table">
+      <el-table :data="dialogTableData" border stripe :header-cell-class-name="'headerBg'" id="out-table" show-summary>
         <!--          <el-table-column prop="id" label="ID"></el-table-column>-->
         <el-table-column prop="billName" label="账单名称"></el-table-column>
-        <el-table-column label="账单费用" prop="billPrice"></el-table-column>
         <el-table-column label="发起用户" prop="billUsername"></el-table-column>
+        <el-table-column label="账单费用" prop="billPrice"></el-table-column>
       </el-table>
       <div slot="footer" class="dialog-footer">
         <el-button
@@ -230,9 +231,10 @@ export default {
           //partyname: this.partyname,
         }
       }).then(res => {
-        //console.log(res.data)
-        this.tableData = res.data
+        console.log(res.data)
+        this.tableData = res.data.list
         this.total = res.data.total
+        console.log(this.total)
       })
 
     },
@@ -249,7 +251,7 @@ export default {
         }
       }).then(res => {
         //console.log(res.data)
-        this.tableData2 = res.data
+        this.tableData2 = res.data.list
         this.total2 = res.data.total
       })
 
@@ -263,7 +265,7 @@ export default {
           id: this.userid
         }
       }).then(res => {
-        this.tableData3 = res.data
+        this.tableData3 = res.data.list
         this.total3 = res.data.total
       })
     },
@@ -311,6 +313,7 @@ export default {
     del(id) {
       this.request.get("/partyinfo/endjoinedparty", {
         params: {
+          userId: this.userid,
           partyId: id
         }
       }).then(res => {
@@ -438,13 +441,13 @@ export default {
     },
     handleSizeChange3(pageSize) {
       console.log(pageSize)
-      this.pageSize2 = pageSize
-      this.load2()
+      this.pageSize3 = pageSize
+      this.load3()
     },
     handleCurrentChange3(pageNum) {
       console.log(pageNum)
-      this.pageNum2 = pageNum
-      this.load2()
+      this.pageNum3 = pageNum
+      this.load3()
     },
     timeConvert(timestamp) {
       //num:0 YYYY-MM-DD  num:1  YYYY-MM-DD hh:mm:ss // timestamp:时间戳

@@ -96,7 +96,7 @@ export default {
         this.request.post("/partyinfo", this.ruleForm).then(res => {
           if (res.code === '200') {
             this.$message.success("创建成功")
-            this.$router.push({path: "/mycreate"}); // 页面路由跳转
+            //this.$router.push({path: "/mycreate"}); // 页面路由跳转
 /*            this.dialogFormVisible = false
             this.load()*/
           } else {

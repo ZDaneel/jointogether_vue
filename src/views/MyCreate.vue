@@ -89,7 +89,7 @@
           :page-sizes="[2, 5, 10, 20]"
           :page-size="pageSize2"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="total">
+          :total="total2">
       </el-pagination>
     </div>
 
@@ -129,7 +129,7 @@
           :page-sizes="[2, 5, 10, 20]"
           :page-size="pageSize3"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="total">
+          :total="total3">
       </el-pagination>
     </div>
 
@@ -252,7 +252,7 @@ export default {
         }
       }).then(res => {
         //console.log(res.data)
-        this.tableData = res.data
+        this.tableData = res.data.list
         this.total = res.data.total
       })
 
@@ -270,7 +270,7 @@ export default {
         }
       }).then(res => {
         //console.log(res.data)
-        this.tableData2 = res.data
+        this.tableData2 = res.data.list
         this.total2 = res.data.total
       })
     },
@@ -287,7 +287,7 @@ export default {
         }
       }).then(res => {
         //console.log(res.data)
-        this.tableData3 = res.data
+        this.tableData3 = res.data.list
         this.total3 = res.data.total
       })
 

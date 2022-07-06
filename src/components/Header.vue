@@ -11,14 +11,10 @@
 
     <el-button type="" icon="el-icon-message" @click="checkmessage()"></el-button>
     <el-dialog title="活动通知" :visible.sync="dialogVisible" width="50%">
-      <el-form :model="messageForm">
-        <el-card>
-          <el-table :data="messageList" border stripe style="margin-top: 20px">
-            <el-table-column width="100px" label="活动名称" prop="partyname"></el-table-column>
-            <el-table-column label="活动通知" prop="message"></el-table-column>
-          </el-table>
-        </el-card>
-      </el-form>
+      <el-table :data="messageList" border stripe style="margin-top: 20px" :header-cell-class-name="'headerBg'">
+        <el-table-column width="100px" label="活动名称" prop="partyname"></el-table-column>
+        <el-table-column label="活动通知" prop="message"></el-table-column>
+      </el-table>
     </el-dialog>
 
     <el-dropdown style="width: 80px; cursor: pointer; text-align: right">
@@ -51,18 +47,18 @@ export default {
     user: Object
   },
   computed: {
-    currentPathName () {
+    currentPathName() {
       return this.$store.state.currentPathName;　　//需要监听的数据
     }
   },
   data() {
     return {
       dialogVisible: false,
-      messageForm:{
-        partyname:'',
-        partymessage:'',
+      messageForm: {
+        partyname: '',
+        partymessage: '',
       },
-      messageList:[],
+      messageList: [],
     }
   },
   methods: {
