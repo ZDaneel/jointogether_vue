@@ -132,7 +132,7 @@
           <el-input v-model="addBillForm.billName" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="账单费用">
-          <el-input v-model.number="addBillForm.billPrice" autocomplete="off"></el-input>
+          <el-input v-model.number="addBillForm.billPrice" oninput="value=value.replace(/[^\d]/g,'')" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -231,10 +231,10 @@ export default {
           //partyname: this.partyname,
         }
       }).then(res => {
-        console.log(res.data)
+        //console.log(res.data)
         this.tableData = res.data.list
         this.total = res.data.total
-        console.log(this.total)
+        //console.log(this.total)
       })
 
     },
@@ -291,7 +291,7 @@ export default {
     },
     handleEdit2(row) {
       this.addBillForm.billPartyId = row.id
-      this.addBillForm.billUsername = JSON.parse(localStorage.getItem("user")).username
+      this.addBillForm.billUsername = JSON.parse(localStorage.getItem("user")).nickname
       this.dialogFormVisible3 = true
     },
     joinParty(row) {

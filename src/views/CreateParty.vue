@@ -74,7 +74,7 @@ export default {
       rules: {
         partyname: [
           {required: true, message: "请输入活动名称", trigger: "blur"},
-          {min: 3, max: 5, message: "长度在 3 到 5 个字符", trigger: "blur"},
+          {min: 2, max: 10, message: "长度在 2 到 10 个字符", trigger: "blur"},
         ],
         place: [{required: true, message: "请选择活动地点", trigger: "blur"}],
         charge: [
@@ -91,6 +91,7 @@ export default {
   methods: {
     submitForm() {
       this.ruleForm.username = JSON.parse(localStorage.getItem("user")).username
+      this.ruleForm.nickname = JSON.parse(localStorage.getItem("user")).nickname
       this.$refs.ruleForm.validate(async (valid) => {
         if (!valid) return;
         this.request.post("/partyinfo", this.ruleForm).then(res => {
@@ -99,6 +100,7 @@ export default {
             //this.$router.push({path: "/mycreate"}); // 页面路由跳转
 /*            this.dialogFormVisible = false
             this.load()*/
+            this.resetForm('ruleForm')
           } else {
             this.$message.error("创建失败")
           }

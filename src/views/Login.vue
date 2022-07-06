@@ -16,9 +16,9 @@
           <el-button type="primary" size="medium" style="width:100%" autocomplete="off" @click="login">登录</el-button>
         </el-form-item>
         <el-form-item style="padding-top: 10px">
-          <div style="float: left">
+<!--          <div style="float: left">
             <el-link type="white" @click="$router.push('/retrievePassword')">忘记密码</el-link>
-          </div>
+          </div>-->
           <div style="float:right;">
             <el-link type="white" @click="$router.push('/register')">还没有账号？点击注册</el-link>
           </div>
