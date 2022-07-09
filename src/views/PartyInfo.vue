@@ -18,7 +18,7 @@
       <el-table-column label="活动时间" prop="date">
         <template slot-scope="scope">{{ timeConvert(scope.row.date) }}</template>
       </el-table-column>
-      <el-table-column label="报名费用" prop="charge"></el-table-column>
+      <el-table-column label="初始费用" prop="charge"></el-table-column>
       <el-table-column label="活动人数" prop="number"></el-table-column>
       <el-table-column label="已报名人数" prop="nownumber"></el-table-column>
       <el-table-column label="团长" prop="username"></el-table-column>

@@ -23,7 +23,7 @@
             ></el-date-picker>
           </div>
         </el-form-item>
-        <el-form-item label="缴纳费用" prop="charge">
+        <el-form-item label="初始费用" prop="charge">
           <el-input v-model.number="ruleForm.charge"></el-input>
         </el-form-item>
         <el-form-item label="拼团人数" prop="number">
@@ -78,7 +78,7 @@ export default {
         ],
         place: [{required: true, message: "请选择活动地点", trigger: "blur"}],
         charge: [
-          {required: true, message: "请输入应缴纳费用", trigger: "blur"},
+          {required: true, message: "请输入费用", trigger: "blur"},
           {type: 'number',required: true, message: "请输入数字", trigger: "blur"}
         ],
         number: [{required: true, message: "请选择人数", trigger: "blur"}],

@@ -12,7 +12,7 @@
       <el-table-column label="活动时间" prop="date">
         <template slot-scope="scope">{{ timeConvert(scope.row.date) }}</template>
       </el-table-column>
-      <el-table-column label="报名费用" prop="charge"></el-table-column>
+      <el-table-column label="初始费用" prop="charge"></el-table-column>
       <el-table-column label="活动人数" prop="number"></el-table-column>
       <el-table-column label="已报名人数" prop="nownumber"></el-table-column>
       <el-table-column label="团长" prop="username"></el-table-column>
@@ -66,7 +66,7 @@
       <el-table-column label="活动介绍" prop="partyintro"></el-table-column>
       <el-table-column label="操作" width="220" align="center">
         <template slot-scope="scope">
-          <el-button type="success" @click="handleEdit2(scope.row)">增加费用</el-button>
+          <el-button type="success" @click="handleEdit2(scope.row)">增加AA费用</el-button>
           <el-popconfirm
               class="ml-5"
               confirm-button-text='确定'
@@ -169,7 +169,7 @@
       </div>
     </el-dialog>
 
-    <el-dialog title="增加费用" :visible.sync="dialogFormVisible3" width="30%">
+    <el-dialog title="增加AA费用" :visible.sync="dialogFormVisible3" width="30%">
       <el-form label-width="80px" size="small">
         <el-form-item label="账单名称">
           <el-input v-model="addBillForm.billName" autocomplete="off"></el-input>
@@ -370,6 +370,8 @@ export default {
       })
     },
     saveAddBill(){
+      //添加的是AA费用
+      this.addBillForm.isAa = 1
       this.request.post("/partybill", this.addBillForm).then(res => {
         if (res.code === '200') {
           this.$message.success("增加成功")

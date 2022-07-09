@@ -20,7 +20,7 @@
       <el-table-column label="活动时间" prop="date">
         <template slot-scope="scope">{{ timeConvert(scope.row.date) }}</template>
       </el-table-column>
-      <el-table-column label="报名费用" prop="charge"></el-table-column>
+      <el-table-column label="初始费用" prop="charge"></el-table-column>
       <el-table-column label="活动人数" prop="number"></el-table-column>
       <el-table-column label="已报名人数" prop="nownumber"></el-table-column>
       <el-table-column label="团长" prop="username"></el-table-column>
@@ -75,7 +75,7 @@
       <el-table-column label="活动介绍" prop="partyintro"></el-table-column>
       <el-table-column label="操作" width="200" align="center">
         <template slot-scope="scope">
-          <el-button type="success" @click="handleEdit2(scope.row)">增加费用</el-button>
+          <el-button type="success" @click="handleEdit2(scope.row)">增加独立费用</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -126,7 +126,7 @@
       </el-pagination>
     </div>
 
-    <el-dialog title="增加费用" :visible.sync="dialogFormVisible3" width="30%">
+    <el-dialog title="增加独立费用" :visible.sync="dialogFormVisible3" width="30%">
       <el-form label-width="80px" size="small">
         <el-form-item label="账单名称">
           <el-input v-model="addBillForm.billName" autocomplete="off"></el-input>
@@ -145,8 +145,13 @@
       <p>你需要支付{{ avgNum }}元</p>
       <br>
       <el-table :data="dialogTableData" border stripe :header-cell-class-name="'headerBg'" id="out-table" show-summary>
-        <!--          <el-table-column prop="id" label="ID"></el-table-column>-->
-        <el-table-column prop="billName" label="账单名称"></el-table-column>
+        <el-table-column label="账单类型" prop="isAa">
+          <template slot-scope="scope">
+            <el-tag type="primary" v-if="scope.row.isAa === 1">AA费用</el-tag>
+            <el-tag type="warning" v-if="scope.row.isAa === 0">独立费用</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="账单名称" prop="billName"></el-table-column>
         <el-table-column label="发起用户" prop="billUsername"></el-table-column>
         <el-table-column label="账单费用" prop="billPrice"></el-table-column>
       </el-table>
@@ -326,6 +331,8 @@ export default {
       })
     },
     saveAddBill() {
+      //添加的是独立费用
+      this.addBillForm.isAa = 0
       this.request.post("/partybill", this.addBillForm).then(res => {
         if (res.code === '200') {
           this.$message.success("增加成功")
@@ -344,23 +351,31 @@ export default {
       this.form = JSON.parse(JSON.stringify(row))
       this.request.get("/partybill", {
         params: {
-          partyId: row.id
+          partyId: row.id,
+          userId: this.userid
         }
       }).then(res => {
         if (res.code === '200') {
           this.dialogTableData = res.data
-          this.dialogFormVisible2 = true
           //计算账单总花费
           let billSum = 0
-          for (const bill of this.dialogTableData) {
+          for (let bill of this.dialogTableData) {
+            //如果是AA制，就处理费用
+            if (bill.isAa === 1) {
+              //除以参加人数
+              bill.billPrice = bill.billPrice / this.form.nownumber
+            }
             billSum += bill.billPrice
           }
-          this.avgNum = parseFloat(billSum / this.form.number).toFixed(2)
+          this.avgNum = parseFloat(billSum).toFixed(2)
+
+          this.dialogFormVisible2 = true
+
         } else {
           this.$message.error("失败")
         }
       })
-    },
+    },//报名费用
     payBillConfirm() {
       this.request.get("/partybill/payconfirm", {
         params: {

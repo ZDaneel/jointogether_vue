@@ -41,7 +41,12 @@
 
     <el-dialog title="账单信息" :visible.sync="dialogFormVisible2" width="30%">
       <el-table :data="dialogTableData" border stripe :header-cell-class-name="'headerBg'" id="out-table">
-        <!--          <el-table-column prop="id" label="ID"></el-table-column>-->
+        <el-table-column label="账单类型" prop="isAa">
+          <template slot-scope="scope">
+            <el-tag type="primary" v-if="scope.row.isAa === 1">AA费用</el-tag>
+            <el-tag type="warning" v-if="scope.row.isAa === 0">独立费用</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column prop="billName" label="账单名称"></el-table-column>
         <el-table-column label="账单费用" prop="billPrice"></el-table-column>
         <el-table-column label="发起用户" prop="billUsername"></el-table-column>
@@ -113,7 +118,7 @@ export default {
     },
     payBill(row) {
       this.form = JSON.parse(JSON.stringify(row))
-      this.request.get("/partybill", {
+      this.request.get("/partybill/all", {
         params: {
           partyId: row.id
         }
